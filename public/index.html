@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Unicorn</title>
+  <style>
+    :root {
+      --bg-color: #1e1e2e;
+      --fg-color: #cdd6f4;
+      --accent: #89b4fa;
+      --accent-dark: #74c7ec;
+      --highlight: #f38ba8;
+      --surface: #313244;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Fira Code", monospace;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--fg-color);
+      padding: 16px;
+    }
+
+    h1 {
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--surface);
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--fg-color);
+      transition: 0.3s;
+    }
+
+    .tab:hover,
+    .tab.active {
+      border-bottom: 3px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #44475a;
+    }
+
+    th {
+      background: #45475a;
+      color: var(--accent-dark);
+    }
+
+    tr:hover {
+      background-color: #3a3d4d;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .toolbar {
+	  display: flex;
+	  align-items: center;
+	  gap: 10px;
+	  margin-bottom: 16px;
+	  color: #ccc;
+	}
+
+	.switch {
+	  position: relative;
+	  display: inline-block;
+	  width: 50px;
+	  height: 24px;
+	}
+
+	.switch input {
+	  opacity: 0;
+	  width: 0;
+	  height: 0;
+	}
+
+	.slider {
+	  position: absolute;
+	  cursor: pointer;
+	  top: 0; left: 0; right: 0; bottom: 0;
+	  background-color: #444;
+	  transition: 0.4s;
+	  border-radius: 34px;
+	}
+
+	.slider:before {
+	  position: absolute;
+	  content: "";
+	  height: 18px; width: 18px;
+	  left: 3px;
+	  bottom: 3px;
+	  background-color: #fff;
+	  transition: 0.4s;
+	  border-radius: 50%;
+	}
+
+	input:checked + .slider {
+	  background-color: #06d6a0;
+	}
+
+	input:checked + .slider:before {
+	  transform: translateX(26px);
+	}
+
+	.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #eee;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Unicorn ✨</h1>
+    
+    <div class="tabs">
+      <button class="tab active" data-tab="proxy">Proxy</button>
+      <button class="tab" data-tab="interceptor">Interceptor</button>
+      <button class="tab" data-tab="brute">Brute-forcer</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </div>
+
+    <div class="tab-content active" id="proxy">
+    	<div class="header">
+	  <h1>Intercepted Requests</h1>
+	  <div class="toolbar">
+	    <span id="toggleLabel">Not intercepting</span>
+	    <label class="switch">
+	      <input type="checkbox" id="interceptToggle">
+	      <span class="slider"></span>
+	    </label>
+	  </div>
+	</div>
+      <!-- <h2>Intercepted Requests</h2><br>
+		<div class="toolbar">
+			<label class="switch">
+				<input type="checkbox" id="interceptToggle" checked>
+				<span class="slider"></span>
+			</label>
+			<span id="toggleLabel">Intercepting</span>
+		</div> -->
+      <table id="logTable">
+        <thead><tr><th>Time</th><th>Method</th><th>Host</th><th>URL</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="tab-content" id="interceptor">
+      <h2>Interceptor</h2>
+      <p>Coming soon...</p>
+    </div>
+
+    <div class="tab-content" id="brute">
+      <h2>Brute-Forcer</h2>
+      <p>Coming soon...</p>
+    </div>
+
+    <div class="tab-content" id="settings">
+      <h2>Settings</h2>
+      <p>Configure your unicorn here.</p>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+	const toggle = document.getElementById('interceptToggle');
+	const label = document.getElementById('toggleLabel');
+
+	toggle.addEventListener('change', async () => {
+		const state = toggle.checked;
+		label.textContent = state ? 'Intercepting' : 'Not intercepting';
+		try {
+		  await fetch('http://localhost:3000/toggle-intercept', {
+		    method: 'POST',
+		    headers: { 'Content-Type': 'application/json' },
+		    body: JSON.stringify({ enabled: state })
+		  });
+		} catch (err) {
+		  console.error('Failed to update intercept state:', err);
+		}
+	});
+
+    async function fetchLogs() {
+      try {
+        const res = await fetch('http://localhost:3000/logs');
+        const logs = await res.json();
+        const table = document.querySelector('#logTable tbody');
+        table.innerHTML = '';
+        logs.reverse().forEach(log => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${new Date(log.time).toLocaleTimeString()}</td><td>${log.method}</td><td>${log.headers.host}</td><td>${log.url}</td>`;
+          table.appendChild(row);
+        });
+      } catch (err) {
+        console.error('Failed to fetch logs:', err);
+      }
+    }
+
+    setInterval(fetchLogs, 2000);
+    fetchLogs();
+  </script>
+</body>
+</html>
